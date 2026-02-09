@@ -26,7 +26,7 @@ For each component, include:
 
 Focus on **shared UI primitives** (Button, Input, Dialog, Card, Select, Checkbox, Table, Tabs, etc.), not page-specific components.
 
-This file should contain the ACTUAL CODE of components, not just a list of names.
+⚠️ This file should contain the ACTUAL CODE of components, not just a list of names.
 
 ### 3. Write `layouts.md`
 Find and READ all shared layout components. These are the components that appear on every page or across multiple pages:
@@ -87,12 +87,16 @@ Dependencies:
 - src/components/home-ui/elegant-hero-section.tsx
   - src/components/home-ui/home-hero-input.tsx
   - src/components/home-ui/persona-selector.tsx
+  - src/components/home-ui/dev-workflow-view.tsx
+  - src/components/home-ui/import-site-modal.tsx
 - src/components/home-ui/elegant-project-grid.tsx
   - src/components/home-ui/elegant-project-card.tsx
+- src/app/(home)/components/template-browse-section.tsx
+  - src/app/(home)/components/template-card.tsx
 - src/components/layout/Footer.tsx
 ```
 
-This tree is the **SINGLE SOURCE OF TRUTH** for which files to read when designing a page. If a file appears in the tree, its UI code MUST be collected as context.
+This tree is the **SINGLE SOURCE OF TRUTH** for which files to pass as `--context-file` when designing a page. If a file appears in the tree, it MUST be included.
 
 Prioritize the most important/complex pages (home, dashboard, settings, etc.). Skip trivial pages (404, offline, status).
 
