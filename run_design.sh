@@ -151,6 +151,7 @@ IMPORTANT: This is a non-interactive run. Skip all confirmation steps and genera
     claude -p "$full_prompt" \
         --output-format text \
         --max-turns 30 \
+        --allowedTools "Edit,Write,Read,Glob,Grep,Bash,Skill" \
         > "$log_file" 2>&1 || true
     echo -e "${GREEN}Claude 运行完成${NC}"
 
@@ -224,10 +225,11 @@ METAEOF
             echo -e "  ${GREEN}→ ${f}${NC}"
         done
     else
-        echo -e "${YELLOW}未检测到生成的设计文件${NC}"
+        echo -e "${RED}未检测到生成的设计文件，中断当前模式${NC}"
         echo -e "${YELLOW}检查日志: ${log_file}${NC}"
         echo -e "${YELLOW}日志末尾:${NC}"
         tail -10 "$log_file" 2>/dev/null || true
+        return 1
     fi
 
     echo ""
@@ -243,7 +245,10 @@ run_mode() {
             [ -f "$f" ] || continue
             local num
             num="$(basename "$f" .txt)"
-            run_single "$mode" "$num" || echo -e "${YELLOW}prompt ${num} 运行异常，继续下一个...${NC}"
+            if ! run_single "$mode" "$num"; then
+                echo -e "${RED}${mode} 模式在 prompt ${num} 失败，跳过剩余 prompt${NC}"
+                return 1
+            fi
         done
     else
         run_single "$mode" "$prompt_num" || echo -e "${YELLOW}运行异常，检查日志${NC}"
