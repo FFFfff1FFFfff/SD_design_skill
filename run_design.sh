@@ -15,14 +15,12 @@
 #
 
 set -uo pipefail
-# 注意：不用 set -e，因为 claude -p 可能返回非零退出码，不应中断整个流程
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
 PROMPTS_DIR="design_prompts"
 RESULTS_DIR="results"
-ITERATIONS_DIR=".superdesign/design_iterations"
 SKILL_LINK=".claude/skills/superdesign"
 
 # ─── 颜色 ───
@@ -61,7 +59,6 @@ check_prerequisites() {
                 echo -e "${RED}CLI 模式需要 superdesign CLI，退出${NC}"
                 exit 1
             fi
-            # both 模式下继续运行，CLI 版可能会失败但不影响 opensource
         fi
     fi
 }
@@ -84,6 +81,15 @@ switch_skill() {
     rm -f "$SKILL_LINK"
     ln -s "$target" "$SKILL_LINK"
     echo -e "${BLUE}已切换 skill 到: ${mode}${NC}"
+}
+
+# ─── 快照工作目录中的 html/css 文件 ───
+snapshot_files() {
+    find "$SCRIPT_DIR" -type f \( -name "*.html" -o -name "*.css" \) \
+        -not -path "*/node_modules/*" \
+        -not -path "*/.git/*" \
+        -not -path "*/results/*" \
+        2>/dev/null | sort
 }
 
 # ─── 运行单个 prompt ───
@@ -120,23 +126,33 @@ run_single() {
     # 切换 skill
     switch_skill "$mode"
 
-    # 清理上次的设计迭代
-    mkdir -p "$ITERATIONS_DIR"
-    rm -rf "${ITERATIONS_DIR:?}"/*
-
-    # 准备结果目录
+    # 准备结果目录（清理旧结果）
+    rm -rf "$result_dir"
     mkdir -p "$result_dir"
 
-    # 构造完整 prompt
-    local full_prompt
-    full_prompt="/superdesign ${prompt_content}
+    # 记录运行前的文件快照
+    local before_snap="/tmp/sd_before_$$"
+    snapshot_files > "$before_snap"
 
-IMPORTANT: This is a non-interactive run. Skip all confirmation steps and generate the final HTML design directly. Do NOT ask questions — make reasonable design decisions and proceed to generate the HTML file(s) to .superdesign/design_iterations/."
+    # 构造完整 prompt — 不用 /superdesign 前缀，直接给出完整指令
+    local full_prompt
+    full_prompt="You are a senior frontend designer. Read the skill instructions from .claude/skills/superdesign/ first, then complete this design task.
+
+${prompt_content}
+
+IMPORTANT INSTRUCTIONS:
+- This is a NON-INTERACTIVE run. Do NOT ask questions or wait for confirmations.
+- Skip the 4-step confirmation workflow. Go straight to generating the final HTML.
+- Make reasonable design decisions on your own.
+- Generate self-contained HTML file(s) with inline Tailwind CSS via CDN.
+- Write the output file(s) to: .superdesign/design_iterations/
+- File naming: design_${prompt_num}_1.html (and _2.html for a second variant)
+- MUST use the Write tool to create the file(s). Do not just output HTML in chat."
 
     echo -e "${BLUE}正在运行 Claude Code (${mode} 模式)...${NC}"
     echo -e "${YELLOW}这可能需要几分钟，请耐心等待...${NC}"
 
-    # 运行 claude，将输出保存为日志
+    # 运行 claude
     local log_file="${result_dir}/claude_output.log"
     local start_time
     start_time=$(date +%s)
@@ -152,11 +168,51 @@ IMPORTANT: This is a non-interactive run. Skip all confirmation steps and genera
     local duration=$((end_time - start_time))
     echo -e "${BLUE}耗时: ${duration}s${NC}"
 
-    # 复制结果
+    # 找出新生成的文件（运行前后 diff）
+    local after_snap="/tmp/sd_after_$$"
+    snapshot_files > "$after_snap"
+
+    local new_files
+    new_files=$(comm -13 "$before_snap" "$after_snap" || true)
+    rm -f "$before_snap" "$after_snap"
+
+    # 复制所有新文件到结果目录
     local count=0
-    if [ -d "$ITERATIONS_DIR" ] && [ "$(ls -A "$ITERATIONS_DIR" 2>/dev/null)" ]; then
-        cp "$ITERATIONS_DIR"/* "$result_dir/" 2>/dev/null || true
-        count=$(find "$result_dir" -name "*.html" -o -name "*.css" | wc -l)
+    if [ -n "$new_files" ]; then
+        while IFS= read -r f; do
+            cp "$f" "$result_dir/" 2>/dev/null && count=$((count + 1))
+        done <<< "$new_files"
+    fi
+
+    # 也检查标准输出目录（以防万一）
+    if [ -d ".superdesign/design_iterations" ]; then
+        for f in .superdesign/design_iterations/*.html .superdesign/design_iterations/*.css; do
+            [ -f "$f" ] || continue
+            if [ ! -f "$result_dir/$(basename "$f")" ]; then
+                cp "$f" "$result_dir/" 2>/dev/null && count=$((count + 1))
+            fi
+        done
+    fi
+
+    # 检查 log 里是否有内联的 HTML（Claude 可能直接输出而没用 Write tool）
+    if [ "$count" -eq 0 ] && [ -f "$log_file" ]; then
+        if grep -q '<!DOCTYPE html\|<html' "$log_file" 2>/dev/null; then
+            echo -e "${YELLOW}检测到 Claude 在日志中输出了 HTML（未写入文件），正在提取...${NC}"
+            python3 -c "
+import re, sys
+log = open('$log_file').read()
+# 找所有 HTML 块
+blocks = re.findall(r'(<!DOCTYPE html.*?</html>)', log, re.DOTALL | re.IGNORECASE)
+if not blocks:
+    blocks = re.findall(r'(<html.*?</html>)', log, re.DOTALL | re.IGNORECASE)
+for i, block in enumerate(blocks, 1):
+    path = '$result_dir/design_${prompt_num}_extracted_{}.html'.format(i)
+    with open(path, 'w') as f:
+        f.write(block)
+    print(f'  提取到: {path}')
+" 2>/dev/null || true
+            count=$(find "$result_dir" -name "*.html" -o -name "*.css" 2>/dev/null | wc -l)
+        fi
     fi
 
     # 保存元信息
@@ -173,11 +229,14 @@ METAEOF
 
     if [ "$count" -gt 0 ]; then
         echo -e "${GREEN}生成了 ${count} 个设计文件，已保存到: ${result_dir}/${NC}"
-        ls -1 "$result_dir"/*.html "$result_dir"/*.css 2>/dev/null | while read -r f; do
-            echo -e "  ${GREEN}→ $(basename "$f")${NC}"
+        find "$result_dir" \( -name "*.html" -o -name "*.css" \) -exec basename {} \; | while read -r f; do
+            echo -e "  ${GREEN}→ ${f}${NC}"
         done
     else
-        echo -e "${YELLOW}未检测到生成的设计文件，请检查日志: ${log_file}${NC}"
+        echo -e "${YELLOW}未检测到生成的设计文件${NC}"
+        echo -e "${YELLOW}检查日志: ${log_file}${NC}"
+        echo -e "${YELLOW}日志末尾:${NC}"
+        tail -10 "$log_file" 2>/dev/null || true
     fi
 
     echo ""
