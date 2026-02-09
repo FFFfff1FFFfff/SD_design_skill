@@ -1,0 +1,7 @@
+# 设计运行结果（本地对比用，不提交）
+results/
+.superdesign/design_iterations/
+.superdesign/init/
+
+# Node
+node_modules/
