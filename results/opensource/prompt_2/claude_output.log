@@ -1,0 +1,28 @@
+Perfect! I've created your "Softly" digital wellness landing page with all the specifications you requested. The design has been saved to:
+
+**`.superdesign/design_iterations/softly_wellness_landing.html`**
+
+## What's included:
+
+✨ **Complete design features:**
+- **Grain texture overlay** (35% opacity SVG noise for that analog feel)
+- **Floating pill navigation** with backdrop blur and coral logo
+- **Hero section** with animated background blobs and cursive accent
+- **Horizontal scrolling scenario cards** (288×160px, hover effects)
+- **3-phone mockup preview** with cascading layout and pulsing breathe button
+- **Diary testimonials** with subtle card rotations and cursive signatures
+- **Interactive FAQ accordion** with smooth expand/collapse and icon rotation
+- **Waitlist conversion section** with floating gradients and form
+- **Reveal-on-scroll animations** throughout
+- **Mobile-first responsive design**
+
+## Design system implemented:
+- Colors: #FDFCF8 background, #FFB7B2 coral accent, #292524 dark text
+- Typography: Outfit (primary) + Reenie Beanie (cursive accents)
+- Border radius: 2rem–4rem for all containers
+- Soft shadows and 0.8s reveal animations
+- Floating blob animations (6s loop)
+
+**To preview:** Simply open the HTML file in any browser. It's fully self-contained with Tailwind CSS CDN and Google Fonts.
+
+The page captures that "digital living room" aesthetic—warm, tactile, intentionally slow, and beautiful! 🌿

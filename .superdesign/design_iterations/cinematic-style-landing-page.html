@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Dark Mode Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=aspekta@300,500,700,900&display=swap');
+
+        :root {
+            --bg-primary: #050505;
+            --card-surface: #111111;
+            --accent-cyan: #06B6D4;
+            --accent-pink: #EC4899;
+            --accent-purple: #7C3AED;
+            --pricing-bg: #0B0216;
+            --calc-bg: #1A0B2E;
+        }
+
+        body {
+            font-family: 'Aspekta', system-ui, sans-serif;
+            background-color: var(--bg-primary);
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .mix-blend-diff {
+            mix-blend-mode: difference;
+        }
+
+        .hero-perspective {
+            perspective: 2000px;
+        }
+
+        .cube-wrapper {
+            transform-style: preserve-3d;
+            animation: rotateCube 20s linear infinite;
+        }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 50vh;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .face-front  { transform: rotateX(0deg) translateZ(30vh); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(30vh); }
+        .face-back   { transform: rotateX(-180deg) translateZ(30vh); }
+        .face-top    { transform: rotateX(90deg) translateZ(30vh); }
+
+        .grayscale-hover {
+            filter: grayscale(100%);
+            transition: filter 0.5s ease, transform 0.5s ease;
+        }
+
+        .grayscale-hover:hover {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
+
+        .glow-purple {
+            filter: blur(100px);
+            background: var(--accent-purple);
+            opacity: 0.3;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #FFFFFF;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px 4px rgba(124, 58, 237, 0.5);
+        }
+
+        .tracking-widest-xl {
+            letter-spacing: 0.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- NAVIGATION -->
+        <nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-6 mix-blend-diff">
+            <div class="flex items-center gap-3">
+                <div class="relative w-3 h-3">
+                    <div class="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-75"></div>
+                    <div class="relative w-3 h-3 bg-red-500 rounded-full"></div>
+                </div>
+                <span class="font-black uppercase tracking-tighter text-2xl">Cine-Core</span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-12 font-medium uppercase tracking-widest text-sm">
+                <a id="nav-work-link" href="#" class="hover:text-cyan-400 transition-colors">Work</a>
+                <a id="nav-about-link" href="#" class="hover:text-cyan-400 transition-colors">About</a>
+                <a id="nav-pricing-link" href="#" class="hover:text-cyan-400 transition-colors">Pricing</a>
+                <a id="nav-journal-link" href="#" class="hover:text-cyan-400 transition-colors">Journal</a>
+            </div>
+
+            <a id="cta-header-link" href="#" class="bg-gradient-to-r from-[#06B6D4] to-[#EC4899] px-6 py-2.5 rounded-lg text-sm font-bold uppercase tracking-widest hover:scale-105 transition-transform">
+                Get Started
+            </a>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <section class="relative h-screen w-full flex items-center justify-center overflow-hidden hero-perspective bg-[#050505]">
+            <div class="absolute inset-0 flex items-center justify-center opacity-30 select-none pointer-events-none">
+                <h1 class="text-[12vw] font-black uppercase tracking-tighter whitespace-nowrap">Portfolio</h1>
+            </div>
+
+            <div class="cube-wrapper relative w-[50vh] h-[50vh]">
+                <div class="cube-face face-front bg-[#06B6D4]/80 flex flex-col">
+                    <span class="text-4xl font-black uppercase tracking-widest-xl">Motion</span>
+                </div>
+                <div class="cube-face face-bottom bg-[#EC4899]/80 flex flex-col">
+                    <span class="text-4xl font-black uppercase tracking-widest-xl">Digital</span>
+                </div>
+                <div class="cube-face face-back bg-[#7C3AED]/80 flex flex-col">
+                    <span class="text-4xl font-black uppercase tracking-widest-xl">Visual</span>
+                </div>
+                <div class="cube-face face-top bg-orange-500/80 flex flex-col">
+                    <span class="text-4xl font-black uppercase tracking-widest-xl">Future</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CASE STUDIES -->
+        <section class="max-w-[90rem] mx-auto px-4 md:px-8 py-32">
+            <h2 class="text-[10vw] font-black uppercase tracking-tighter mb-16 leading-none">Selected Work</h2>
+
+            <!-- Featured Project -->
+            <div class="relative group border border-white/10 mb-12 rounded-xl overflow-hidden aspect-video bg-[#111111]">
+                <div class="absolute top-4 left-4 flex gap-2 z-10">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=2070" alt="Featured" class="w-full h-full object-cover grayscale-hover">
+                <div class="absolute bottom-8 left-8">
+                    <span class="text-xs font-bold uppercase tracking-widest text-[#06B6D4] mb-2 block">Identity Design</span>
+                    <h3 class="text-4xl font-bold uppercase tracking-tighter">NEON ASCENT 2024</h3>
+                </div>
+            </div>
+
+            <!-- Sub Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="group aspect-[4/3] border border-white/10 rounded-xl overflow-hidden bg-[#111111] relative">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1000" alt="Sub Project 1" class="w-full h-full object-cover grayscale-hover">
+                    <div class="absolute bottom-6 left-6">
+                        <h4 class="text-xl font-bold uppercase tracking-tighter">Vaporware Archive</h4>
+                    </div>
+                </div>
+                <div class="group aspect-[4/3] border border-white/10 rounded-xl overflow-hidden bg-[#111111] relative">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1000" alt="Sub Project 2" class="w-full h-full object-cover grayscale-hover">
+                    <div class="absolute bottom-6 left-6">
+                        <h4 class="text-xl font-bold uppercase tracking-tighter">Abstract Geometry</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING SECTION -->
+        <section class="relative py-32 bg-[#0B0216] overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] glow-purple pointer-events-none"></div>
+            
+            <div class="max-w-[90rem] mx-auto px-4 md:px-8 relative z-10">
+                <h2 class="text-center text-4xl md:text-6xl font-black uppercase tracking-tighter mb-20">Flexible Solutions</h2>
+
+                <div class="flex flex-col lg:flex-row items-center justify-center gap-8 mb-32">
+                    <!-- Starter -->
+                    <div class="w-full max-w-sm p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl">
+                        <h3 class="text-2xl font-bold uppercase mb-4">Basic</h3>
+                        <div class="text-5xl font-black mb-8">$49<span class="text-lg font-light text-gray-400">/mo</span></div>
+                        <ul class="space-y-4 mb-10 text-gray-300">
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-cyan-400"></iconify-icon> Single Brand Setup</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-cyan-400"></iconify-icon> Standard Support</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-cyan-400"></iconify-icon> Monthly Reports</li>
+                        </ul>
+                        <a id="price-basic-link" href="#" class="block text-center py-4 border border-white/20 rounded-lg uppercase text-sm tracking-widest font-bold hover:bg-white/10 transition-colors">Choose Basic</a>
+                    </div>
+
+                    <!-- Growth (Centered, White) -->
+                    <div class="w-full max-w-sm p-8 bg-white text-[#111111] rounded-2xl scale-105 z-20">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-pink-500 text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest">Recommended</div>
+                        <h3 class="text-2xl font-bold uppercase mb-4">Growth</h3>
+                        <div class="text-5xl font-black mb-8">$129<span class="text-lg font-light text-gray-500">/mo</span></div>
+                        <ul class="space-y-4 mb-10">
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-purple-600"></iconify-icon> 5 Project Slots</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-purple-600"></iconify-icon> Priority Feedback</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-purple-600"></iconify-icon> Dynamic Assets</li>
+                        </ul>
+                        <a id="price-growth-link" href="#" class="block text-center py-4 bg-[#111111] text-white rounded-lg uppercase text-sm tracking-widest font-bold hover:bg-[#222222] transition-colors">Scale Up</a>
+                    </div>
+
+                    <!-- Enterprise -->
+                    <div class="w-full max-w-sm p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl">
+                        <h3 class="text-2xl font-bold uppercase mb-4">Enterprise</h3>
+                        <div class="text-5xl font-black mb-8">$499<span class="text-lg font-light text-gray-400">/mo</span></div>
+                        <ul class="space-y-4 mb-10 text-gray-300">
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-pink-400"></iconify-icon> Custom Pipeline</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-pink-400"></iconify-icon> 24/7 Dedicated</li>
+                            <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-pink-400"></iconify-icon> Full Source Access</li>
+                        </ul>
+                        <a id="price-enterprise-link" href="#" class="block text-center py-4 border border-white/20 rounded-lg uppercase text-sm tracking-widest font-bold hover:bg-white/10 transition-colors">Contact Sales</a>
+                    </div>
+                </div>
+
+                <!-- Calculator -->
+                <div class="max-w-4xl mx-auto bg-[#1A0B2E] p-12 rounded-[32px] border border-white/5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h4 class="text-xl font-bold uppercase tracking-widest mb-6">Estimate Revenue</h4>
+                            <p class="text-gray-400 mb-8 font-light">Adjust the scale to see potential growth impact with our cinematic strategy.</p>
+                            <input type="range" min="1" max="100" value="50" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer mb-2" id="priceRange">
+                            <div class="flex justify-between text-xs text-gray-500 uppercase font-bold tracking-widest">
+                                <span>1 Unit</span>
+                                <span>100 Units</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2 block">Projected Output</span>
+                            <div class="text-7xl font-black tabular-nums" id="priceDisplay">$6250</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="bg-[#050505] pt-32 pb-16 px-8">
+            <div class="max-w-[90rem] mx-auto">
+                <div class="border-t border-white/10 pt-16 mb-24">
+                    <h2 class="text-[12vw] font-black uppercase tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-800">
+                        Let's Talk
+                    </h2>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+                    <div>
+                        <h5 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">Directory</h5>
+                        <ul class="space-y-4 text-lg font-medium">
+                            <li><a id="footer-home" href="#" class="hover:text-cyan-400">Home</a></li>
+                            <li><a id="footer-work" href="#" class="hover:text-cyan-400">Work</a></li>
+                            <li><a id="footer-services" href="#" class="hover:text-cyan-400">Services</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">Social</h5>
+                        <ul class="space-y-4 text-lg font-medium">
+                            <li><a id="footer-twitter" href="#" class="hover:text-cyan-400">Twitter</a></li>
+                            <li><a id="footer-instagram" href="#" class="hover:text-cyan-400">Instagram</a></li>
+                            <li><a id="footer-dribbble" href="#" class="hover:text-cyan-400">Dribbble</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-span-2 text-right">
+                        <h5 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">Newsletter</h5>
+                        <div class="flex justify-end">
+                            <div class="relative w-full max-w-sm">
+                                <input type="email" placeholder="Email Address" class="w-full bg-transparent border-b border-white/20 py-2 focus:outline-none focus:border-cyan-400 transition-colors uppercase text-sm tracking-widest">
+                                <button class="absolute right-0 bottom-2">
+                                    <iconify-icon icon="lucide:arrow-right" class="text-xl"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-32 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 font-bold uppercase tracking-widest">
+                    <p>&copy; 2024 CINE-CORE AGENCY. ALL RIGHTS RESERVED.</p>
+                    <div class="flex gap-8 mt-4 md:mt-0">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const range = document.getElementById('priceRange');
+        const display = document.getElementById('priceDisplay');
+        
+        range.addEventListener('input', (e) => {
+            const value = e.target.value;
+            display.innerText = '$' + (value * 125).toLocaleString();
+        });
+    </script>
+</body>
+</html>

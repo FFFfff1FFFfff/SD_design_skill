@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Style - Immersive Dark Mode Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+
+        /* Using Space Grotesk as fallback for Aspekta */
+        * {
+            font-family: 'Space Grotesk', 'Aspekta', -apple-system, sans-serif;
+        }
+
+        body {
+            background: #050505;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        /* Sticky Navigation with mix-blend-difference */
+        .nav-container {
+            mix-blend-mode: difference;
+        }
+
+        /* Pulsing dot animation */
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .pulse-dot {
+            animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* 3D Cube Setup */
+        .perspective-container {
+            perspective: 2000px;
+        }
+
+        .cube-wrapper {
+            transform-style: preserve-3d;
+            animation: rotate-cube 20s linear infinite;
+        }
+
+        @keyframes rotate-cube {
+            from { transform: rotateX(0deg); }
+            to { transform: rotateX(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 50vh;
+            height: 50vh;
+            backface-visibility: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .cube-face-front {
+            transform: rotateX(0deg) translateZ(30vh);
+        }
+
+        .cube-face-bottom {
+            transform: rotateX(-90deg) translateZ(30vh);
+        }
+
+        .cube-face-back {
+            transform: rotateX(-180deg) translateZ(30vh);
+        }
+
+        .cube-face-top {
+            transform: rotateX(90deg) translateZ(30vh);
+        }
+
+        /* Background text effect */
+        .hero-bg-text {
+            font-size: 20vw;
+            font-weight: 900;
+            color: #FFFFFF;
+            opacity: 0.03;
+            line-height: 0.9;
+            letter-spacing: -0.05em;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Grayscale to color transition */
+        .grayscale-hover {
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .grayscale-hover:hover {
+            filter: grayscale(0%);
+        }
+
+        /* Gradient button */
+        .gradient-btn {
+            background: linear-gradient(to right, #06B6D4, #EC4899);
+            transition: transform 0.2s ease;
+        }
+
+        .gradient-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* Purple glow effect */
+        .purple-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: #7C3AED;
+            filter: blur(100px);
+            opacity: 0.3;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        /* Custom range slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #374151;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.5);
+            border: none;
+        }
+
+        /* Traffic lights */
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Link transitions */
+        a {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Navigation -->
+    <nav class="nav-container fixed top-0 left-0 right-0 z-50 px-8 py-6">
+        <div class="max-w-[90rem] mx-auto flex items-center justify-between">
+            <!-- Logo with pulsing dot -->
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
+                <span class="text-xl font-bold tracking-tight">CINEMATIC</span>
+            </div>
+
+            <!-- Nav Links (hidden on mobile) -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#work" class="text-sm font-medium tracking-wider uppercase hover:opacity-70">Work</a>
+                <a href="#services" class="text-sm font-medium tracking-wider uppercase hover:opacity-70">Services</a>
+                <a href="#about" class="text-sm font-medium tracking-wider uppercase hover:opacity-70">About</a>
+                <a href="#contact" class="text-sm font-medium tracking-wider uppercase hover:opacity-70">Contact</a>
+            </div>
+
+            <!-- CTA Button -->
+            <button class="gradient-btn px-6 py-2.5 rounded-full text-sm font-bold tracking-wide uppercase">
+                Start Project
+            </button>
+        </div>
+    </nav>
+
+    <!-- 3D Rolodex Hero -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden perspective-container">
+        <!-- Background Text -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="hero-bg-text text-center">
+                CINEMATIC<br/>DESIGN<br/>STUDIO
+            </div>
+        </div>
+
+        <!-- 3D Cube -->
+        <div class="relative z-10 w-[50vh] h-[50vh]">
+            <div class="cube-wrapper w-full h-full relative">
+                <!-- Front Face -->
+                <div class="cube-face cube-face-front bg-[#111111]">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=800&fit=crop"
+                         alt="Project 1"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <h3 class="text-3xl font-bold tracking-[0.2em] uppercase">IDENTITY</h3>
+                    </div>
+                </div>
+
+                <!-- Bottom Face -->
+                <div class="cube-face cube-face-bottom bg-[#111111]">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop"
+                         alt="Project 2"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <h3 class="text-3xl font-bold tracking-[0.2em] uppercase">MOTION</h3>
+                    </div>
+                </div>
+
+                <!-- Back Face -->
+                <div class="cube-face cube-face-back bg-[#111111]">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=800&fit=crop"
+                         alt="Project 3"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <h3 class="text-3xl font-bold tracking-[0.2em] uppercase">SPACE</h3>
+                    </div>
+                </div>
+
+                <!-- Top Face -->
+                <div class="cube-face cube-face-top bg-[#111111]">
+                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&h=800&fit=crop"
+                         alt="Project 4"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <h3 class="text-3xl font-bold tracking-[0.2em] uppercase">DIGITAL</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-xs tracking-[0.3em] uppercase text-[#999999]">
+            Scroll to explore
+        </div>
+    </section>
+
+    <!-- Case Studies Grid -->
+    <section id="work" class="py-32 px-8">
+        <div class="max-w-[90rem] mx-auto">
+            <!-- Section Header -->
+            <h2 class="text-[10vw] font-black tracking-tighter mb-16 uppercase leading-none">
+                Selected<br/>Work
+            </h2>
+
+            <!-- Featured Project -->
+            <div class="mb-8 relative group">
+                <!-- Traffic Lights -->
+                <div class="absolute top-4 left-4 flex gap-2 z-10">
+                    <div class="traffic-light bg-red-500"></div>
+                    <div class="traffic-light bg-yellow-400"></div>
+                    <div class="traffic-light bg-green-500"></div>
+                </div>
+
+                <div class="aspect-video overflow-hidden border border-white/10 bg-[#111111]">
+                    <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=1600&h=900&fit=crop"
+                         alt="Featured Project"
+                         class="w-full h-full object-cover grayscale-hover">
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-3xl font-bold mb-2 uppercase tracking-wide">HYPERSPACE STUDIO</h3>
+                    <p class="text-[#999999] text-lg font-light">Brand Identity & Digital Experience</p>
+                </div>
+            </div>
+
+            <!-- Sub Projects Grid -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Project 2 -->
+                <div class="group">
+                    <div class="aspect-[4/3] overflow-hidden border border-white/10 bg-[#111111] mb-4">
+                        <img src="https://images.unsplash.com/photo-1618556450994-a6a128ef0d9d?w=800&h=600&fit=crop"
+                             alt="Project 2"
+                             class="w-full h-full object-cover grayscale-hover">
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-wide">NEON FUTURES</h3>
+                    <p class="text-[#999999] font-light">Visual Campaign</p>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group">
+                    <div class="aspect-[4/3] overflow-hidden border border-white/10 bg-[#111111] mb-4">
+                        <img src="https://images.unsplash.com/photo-1618005198920-f0cb2d7ddbe2?w=800&h=600&fit=crop"
+                             alt="Project 3"
+                             class="w-full h-full object-cover grayscale-hover">
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-wide">VOID ARCHITECTURE</h3>
+                    <p class="text-[#999999] font-light">Spatial Design</p>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="group">
+                    <div class="aspect-[4/3] overflow-hidden border border-white/10 bg-[#111111] mb-4">
+                        <img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&h=600&fit=crop"
+                             alt="Project 4"
+                             class="w-full h-full object-cover grayscale-hover">
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-wide">QUANTUM LABS</h3>
+                    <p class="text-[#999999] font-light">Product Design</p>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="group">
+                    <div class="aspect-[4/3] overflow-hidden border border-white/10 bg-[#111111] mb-4">
+                        <img src="https://images.unsplash.com/photo-1618556450991-2f1af64e8191?w=800&h=600&fit=crop"
+                             alt="Project 5"
+                             class="w-full h-full object-cover grayscale-hover">
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-wide">ECHO SYSTEMS</h3>
+                    <p class="text-[#999999] font-light">Interactive Installation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="services" class="relative py-32 px-8 bg-[#0B0216] overflow-hidden">
+        <!-- Purple Glow -->
+        <div class="purple-glow"></div>
+
+        <div class="max-w-[90rem] mx-auto relative z-10">
+            <!-- Section Header -->
+            <h2 class="text-[10vw] font-black tracking-tighter mb-4 uppercase leading-none text-center">
+                Pricing
+            </h2>
+            <p class="text-center text-[#999999] text-lg mb-16 font-light">Choose the plan that fits your vision</p>
+
+            <!-- Three-tier Cards -->
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- Starter Plan -->
+                <div class="glass rounded-3xl p-8">
+                    <h3 class="text-2xl font-bold uppercase tracking-wide mb-2">STARTER</h3>
+                    <p class="text-[#999999] text-sm mb-6">For emerging brands</p>
+                    <div class="mb-8">
+                        <span class="text-6xl font-black">$5K</span>
+                        <span class="text-[#999999]">/project</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-sm font-light">
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Brand Identity System
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Logo & Visual Assets
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Style Guide
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            2 Rounds of Revisions
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 rounded-full border border-white/20 hover:bg-white/5 transition font-bold tracking-wide uppercase text-sm">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Growth Plan (Featured) -->
+                <div class="bg-white text-[#111111] rounded-3xl p-8 transform scale-105 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                        Popular
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-wide mb-2">GROWTH</h3>
+                    <p class="text-gray-600 text-sm mb-6">For scaling businesses</p>
+                    <div class="mb-8">
+                        <span class="text-6xl font-black">$15K</span>
+                        <span class="text-gray-600">/project</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-sm">
+                        <li class="flex items-center gap-3">
+                            <span class="text-pink-500">✓</span>
+                            Everything in Starter
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-pink-500">✓</span>
+                            Digital Experience Design
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-pink-500">✓</span>
+                            Motion Graphics Package
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-pink-500">✓</span>
+                            Interactive Prototype
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-pink-500">✓</span>
+                            4 Rounds of Revisions
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 rounded-full bg-gradient-to-r from-cyan-400 to-pink-500 text-white hover:opacity-90 transition font-bold tracking-wide uppercase text-sm">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="glass rounded-3xl p-8">
+                    <h3 class="text-2xl font-bold uppercase tracking-wide mb-2">ENTERPRISE</h3>
+                    <p class="text-[#999999] text-sm mb-6">For industry leaders</p>
+                    <div class="mb-8">
+                        <span class="text-6xl font-black">$50K+</span>
+                        <span class="text-[#999999]">/project</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-sm font-light">
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Everything in Growth
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Full-Scale Campaign
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            3D & Spatial Design
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Dedicated Team
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-cyan-400">✓</span>
+                            Unlimited Revisions
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 rounded-full border border-white/20 hover:bg-white/5 transition font-bold tracking-wide uppercase text-sm">
+                        Contact Us
+                    </button>
+                </div>
+            </div>
+
+            <!-- Price Calculator -->
+            <div class="max-w-2xl mx-auto rounded-[32px] p-8" style="background: #1A0B2E;">
+                <h3 class="text-2xl font-bold uppercase tracking-wide mb-2 text-center">ESTIMATE YOUR PROJECT</h3>
+                <p class="text-center text-[#999999] text-sm mb-8">Slide to calculate custom pricing</p>
+
+                <div class="mb-6">
+                    <input type="range" min="1" max="100" value="50" id="priceRange" class="w-full mb-4">
+                </div>
+
+                <div class="text-center">
+                    <div class="text-7xl font-black mb-2">
+                        $<span id="priceDisplay">6,250</span>
+                    </div>
+                    <p class="text-[#999999] text-sm">Estimated project value</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Massive Footer -->
+    <footer class="py-32 px-8 bg-[#050505] border-t border-white/10">
+        <div class="max-w-[90rem] mx-auto">
+            <!-- Large CTA -->
+            <div class="mb-20 text-center">
+                <h2 class="text-[12vw] font-black tracking-tighter mb-8 uppercase leading-none">
+                    LET'S CREATE<br/>TOGETHER
+                </h2>
+                <button class="gradient-btn px-12 py-5 rounded-full text-lg font-bold tracking-wide uppercase">
+                    Start a Project
+                </button>
+            </div>
+
+            <!-- Footer Grid -->
+            <div class="grid md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <h4 class="text-sm font-bold tracking-[0.2em] uppercase mb-4">STUDIO</h4>
+                    <ul class="space-y-2 text-[#999999] text-sm font-light">
+                        <li><a href="#" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Services</a></li>
+                        <li><a href="#" class="hover:text-white">Process</a></li>
+                        <li><a href="#" class="hover:text-white">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold tracking-[0.2em] uppercase mb-4">WORK</h4>
+                    <ul class="space-y-2 text-[#999999] text-sm font-light">
+                        <li><a href="#" class="hover:text-white">Portfolio</a></li>
+                        <li><a href="#" class="hover:text-white">Case Studies</a></li>
+                        <li><a href="#" class="hover:text-white">Clients</a></li>
+                        <li><a href="#" class="hover:text-white">Testimonials</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold tracking-[0.2em] uppercase mb-4">CONNECT</h4>
+                    <ul class="space-y-2 text-[#999999] text-sm font-light">
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                        <li><a href="#" class="hover:text-white">Twitter</a></li>
+                        <li><a href="#" class="hover:text-white">Instagram</a></li>
+                        <li><a href="#" class="hover:text-white">Dribbble</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold tracking-[0.2em] uppercase mb-4">LOCATION</h4>
+                    <p class="text-[#999999] text-sm font-light">
+                        Los Angeles, CA<br/>
+                        United States<br/><br/>
+                        hello@cinematic.studio
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/10">
+                <p class="text-[#999999] text-xs">© 2026 Cinematic Studio. All rights reserved.</p>
+                <div class="flex gap-6 text-[#999999] text-xs">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Price Calculator
+        const rangeInput = document.getElementById('priceRange');
+        const priceDisplay = document.getElementById('priceDisplay');
+
+        rangeInput.addEventListener('input', function() {
+            const value = this.value;
+            const price = (value * 125).toLocaleString();
+            priceDisplay.textContent = price;
+        });
+    </script>
+
+</body>
+</html>

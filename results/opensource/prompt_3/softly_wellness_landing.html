@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Softly — Digital Wellness App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #FDFCF8;
+            --sage: #E8EFE8;
+            --lavender: #EFEDF4;
+            --coral: #FFB7B2;
+            --dark-text: #292524;
+            --muted-text: #78716C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--dark-text);
+            overflow-x: hidden;
+        }
+
+        .cursive {
+            font-family: 'Reenie Beanie', cursive;
+        }
+
+        /* Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.35;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' /%3E%3C/svg%3E");
+        }
+
+        /* Navigation */
+        .nav-pill {
+            backdrop-filter: blur(20px);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Floating blobs */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .blob-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .blob-float-delayed {
+            animation: float 6s ease-in-out infinite;
+            animation-delay: 3s;
+        }
+
+        /* Reveal on scroll animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Horizontal scroll */
+        .horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 0 1rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-card {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            width: 288px;
+            height: 160px;
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-card:hover .card-text {
+            color: var(--coral);
+        }
+
+        /* Phone mockups */
+        .phone-mockup {
+            border-radius: 2.5rem;
+            border: 8px solid var(--dark-text);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 24px;
+            background: var(--dark-text);
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        /* Pulsing breathe button */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .pulse-button {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Diary card rotation */
+        .rotate-1 {
+            transform: rotate(1deg);
+        }
+
+        .rotate-minus-1 {
+            transform: rotate(-1deg);
+        }
+
+        /* FAQ Accordion */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+        }
+
+        .faq-content.open {
+            max-height: 500px;
+            padding-bottom: 1.5rem;
+        }
+
+        .plus-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .plus-icon.rotate {
+            transform: rotate(45deg);
+        }
+
+        /* Button hover effects */
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+        /* Custom shadows */
+        .soft-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive text sizing */
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 48px;
+                line-height: 1.1;
+            }
+        }
+
+        @media (min-width: 641px) {
+            .hero-title {
+                font-size: 72px;
+                line-height: 1.1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Grain Overlay -->
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-4 left-4 right-4 z-40 nav-pill rounded-full px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
+        <div class="flex items-center gap-8">
+            <!-- Logo -->
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--coral);">
+                <div class="w-3 h-3 rounded-full bg-white"></div>
+            </div>
+
+            <!-- Nav Links (hidden on mobile) -->
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-sm font-medium text-stone-700 hover:text-stone-900 transition">Features</a>
+                <a href="#about" class="text-sm font-medium text-stone-700 hover:text-stone-900 transition">About</a>
+                <a href="#faq" class="text-sm font-medium text-stone-700 hover:text-stone-900 transition">FAQ</a>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <button class="px-6 py-2 rounded-full text-sm font-medium text-white hover-scale" style="background-color: var(--dark-text);">
+            Join waitlist
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-16 overflow-hidden">
+        <!-- Background Blobs -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="blob-float absolute top-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-60" style="background-color: #FFE4E1;"></div>
+            <div class="blob-float-delayed absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-60" style="background-color: #E6E6FA;"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 text-center max-w-4xl mx-auto">
+            <h1 class="hero-title font-semibold mb-6" style="letter-spacing: -0.025em;">
+                Find your <span class="cursive text-7xl md:text-8xl" style="color: var(--coral);">calm</span> in the digital noise
+            </h1>
+            <p class="text-lg md:text-xl text-stone-600 max-w-lg mx-auto mb-10 font-light">
+                A mindful companion that helps you pause, reflect, and reconnect with what matters most.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button class="px-8 py-4 rounded-full text-base font-medium text-white hover-scale soft-shadow" style="background-color: var(--coral);">
+                    Start your journey
+                </button>
+                <button class="px-8 py-4 rounded-full text-base font-medium bg-white border border-stone-200 hover-scale soft-shadow" style="color: var(--dark-text);">
+                    Learn more
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Scenario Scroll -->
+    <section class="py-16 reveal" id="features">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-8 text-center" style="letter-spacing: -0.025em;">
+                Your day, <span class="cursive text-5xl" style="color: var(--coral);">reimagined</span>
+            </h2>
+
+            <div class="horizontal-scroll py-4">
+                <div class="scroll-card">
+                    <span class="text-sm text-stone-400">Morning</span>
+                    <p class="card-text text-xl text-stone-800 font-medium transition-colors">
+                        Wake up to gentle reminders, not alarms
+                    </p>
+                </div>
+
+                <div class="scroll-card">
+                    <span class="text-sm text-stone-400">Midday</span>
+                    <p class="card-text text-xl text-stone-800 font-medium transition-colors">
+                        Take mindful breaks between meetings
+                    </p>
+                </div>
+
+                <div class="scroll-card">
+                    <span class="text-sm text-stone-400">Afternoon</span>
+                    <p class="card-text text-xl text-stone-800 font-medium transition-colors">
+                        Journal your thoughts in private space
+                    </p>
+                </div>
+
+                <div class="scroll-card">
+                    <span class="text-sm text-stone-400">Evening</span>
+                    <p class="card-text text-xl text-stone-800 font-medium transition-colors">
+                        Wind down with guided reflections
+                    </p>
+                </div>
+
+                <div class="scroll-card">
+                    <span class="text-sm text-stone-400">Night</span>
+                    <p class="card-text text-xl text-stone-800 font-medium transition-colors">
+                        Drift into peaceful sleep rituals
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Experience Preview -->
+    <section class="py-24 reveal">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-16 text-center" style="letter-spacing: -0.025em;">
+                Designed for <span class="cursive text-5xl" style="color: var(--coral);">presence</span>
+            </h2>
+
+            <div class="relative flex items-center justify-center gap-4 md:gap-8" style="min-height: 700px;">
+                <!-- Left Phone -->
+                <div class="phone-mockup opacity-80 hidden md:block" style="width: 280px; height: 580px; transform: translateY(48px);">
+                    <div class="phone-notch"></div>
+                    <div class="w-full h-full flex items-center justify-center p-8" style="background-color: var(--sage);">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📝</div>
+                            <p class="text-lg font-medium" style="color: var(--dark-text);">Daily journal</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Phone -->
+                <div class="phone-mockup z-10" style="width: 300px; height: 620px;">
+                    <div class="phone-notch"></div>
+                    <div class="w-full h-full flex flex-col items-center justify-center p-8 gap-8" style="background-color: var(--bg-primary);">
+                        <p class="text-2xl font-light text-center" style="color: var(--dark-text);">Take a moment</p>
+                        <button class="w-48 h-48 rounded-full pulse-button flex items-center justify-center text-white text-xl font-medium" style="background-color: var(--coral);">
+                            Breathe
+                        </button>
+                        <p class="text-sm text-stone-500">Inhale for 4, hold for 4</p>
+                    </div>
+                </div>
+
+                <!-- Right Phone -->
+                <div class="phone-mockup opacity-80 hidden md:block" style="width: 280px; height: 580px; transform: translateY(96px);">
+                    <div class="phone-notch"></div>
+                    <div class="w-full h-full flex items-center justify-center p-8" style="background-color: var(--lavender);">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🌙</div>
+                            <p class="text-lg font-medium" style="color: var(--dark-text);">Sleep stories</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diary Entry Testimonials -->
+    <section class="py-24 reveal" style="background-color: var(--sage);">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-16 text-center" style="letter-spacing: -0.025em;">
+                Stories from our <span class="cursive text-5xl" style="color: var(--coral);">community</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-3xl p-8 soft-shadow rotate-1">
+                    <p class="text-lg font-light mb-6 leading-relaxed" style="color: var(--dark-text);">
+                        "I used to doomscroll for hours. Now I actually look forward to my morning ritual with Softly. It's like having a friend who reminds me to breathe."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="h-0.5 w-8 bg-stone-300"></div>
+                        <p class="cursive text-2xl text-stone-500">Sarah M.</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-3xl p-8 soft-shadow rotate-minus-1">
+                    <p class="text-lg font-light mb-6 leading-relaxed" style="color: var(--dark-text);">
+                        "The journaling feature changed everything. I can finally see patterns in my anxiety and actually do something about them."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="h-0.5 w-8 bg-stone-300"></div>
+                        <p class="cursive text-2xl text-stone-500">Alex K.</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-3xl p-8 soft-shadow rotate-minus-1">
+                    <p class="text-lg font-light mb-6 leading-relaxed" style="color: var(--dark-text);">
+                        "It's not another productivity app that makes me feel guilty. Softly actually helps me slow down and be present."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="h-0.5 w-8 bg-stone-300"></div>
+                        <p class="cursive text-2xl text-stone-500">Jamie L.</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="bg-white rounded-3xl p-8 soft-shadow rotate-1">
+                    <p class="text-lg font-light mb-6 leading-relaxed" style="color: var(--dark-text);">
+                        "The grain texture and soft colors make it feel like writing in a real journal. It's the little details that matter."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="h-0.5 w-8 bg-stone-300"></div>
+                        <p class="cursive text-2xl text-stone-500">Morgan T.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="py-24 reveal" id="faq">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-12 text-center" style="letter-spacing: -0.025em;">
+                Questions we <span class="cursive text-5xl" style="color: var(--coral);">often hear</span>
+            </h2>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+                    <button class="faq-header w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-medium" style="color: var(--dark-text);">Is my data private?</span>
+                        <svg class="plus-icon w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-content px-6">
+                        <p class="text-stone-600 leading-relaxed">
+                            Absolutely. Your journal entries, reflections, and personal data are encrypted end-to-end. We never sell your data or use it for advertising. What you write stays yours.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+                    <button class="faq-header w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-medium" style="color: var(--dark-text);">How is this different from meditation apps?</span>
+                        <svg class="plus-icon w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-content px-6">
+                        <p class="text-stone-600 leading-relaxed">
+                            Softly is designed for daily life, not just meditation sessions. We help you build mindful habits throughout your day—from morning wake-ups to evening wind-downs. Think of it as a gentle companion, not a course.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+                    <button class="faq-header w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-medium" style="color: var(--dark-text);">When will Softly be available?</span>
+                        <svg class="plus-icon w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-content px-6">
+                        <p class="text-stone-600 leading-relaxed">
+                            We're launching our beta in early 2026. Join the waitlist below to get early access and help shape the future of digital wellness.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden">
+                    <button class="faq-header w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-medium" style="color: var(--dark-text);">Will there be a free version?</span>
+                        <svg class="plus-icon w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <div class="faq-content px-6">
+                        <p class="text-stone-600 leading-relaxed">
+                            Yes! We believe everyone deserves access to digital wellness tools. Our core features will always be free, with optional premium features for deeper personalization.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Conversion -->
+    <section class="relative py-32 px-4 overflow-hidden">
+        <!-- Background gradients -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="blob-float absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-40" style="background: linear-gradient(135deg, var(--coral) 0%, var(--lavender) 100%);"></div>
+            <div class="blob-float-delayed absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-40" style="background: linear-gradient(135deg, var(--sage) 0%, var(--lavender) 100%);"></div>
+        </div>
+
+        <div class="relative z-10 max-w-2xl mx-auto text-center">
+            <!-- Icon -->
+            <div class="w-20 h-20 rounded-3xl mx-auto mb-8 flex items-center justify-center relative" style="background-color: var(--dark-text);">
+                <div class="w-4 h-4 rounded-full absolute top-2 right-2" style="background-color: var(--coral);"></div>
+                <span class="text-4xl">✨</span>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-semibold mb-6" style="letter-spacing: -0.025em;">
+                Join the <span class="cursive text-6xl" style="color: var(--coral);">movement</span>
+            </h2>
+            <p class="text-lg text-stone-600 mb-12 max-w-lg mx-auto">
+                Be among the first to experience a calmer, more intentional relationship with technology.
+            </p>
+
+            <!-- Form -->
+            <form class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+                <input
+                    type="email"
+                    placeholder="Enter your email"
+                    class="w-full sm:flex-1 px-6 py-4 rounded-full bg-stone-50 border-2 border-stone-200 focus:border-stone-400 focus:outline-none text-base"
+                    style="color: var(--dark-text);"
+                    required
+                />
+                <button
+                    type="submit"
+                    class="w-full sm:w-auto px-8 py-4 rounded-full text-base font-medium text-white hover-scale"
+                    style="background-color: var(--dark-text);"
+                >
+                    Get early access
+                </button>
+            </form>
+
+            <p class="text-sm text-stone-500 mt-6">
+                No spam, ever. Just updates on our launch. ✨
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-stone-200">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--coral);">
+                        <div class="w-3 h-3 rounded-full bg-white"></div>
+                    </div>
+                    <span class="text-lg font-medium">Softly</span>
+                </div>
+
+                <div class="flex items-center gap-8 text-sm text-stone-600">
+                    <a href="#" class="hover:text-stone-900 transition">Privacy</a>
+                    <a href="#" class="hover:text-stone-900 transition">Terms</a>
+                    <a href="#" class="hover:text-stone-900 transition">Contact</a>
+                </div>
+
+                <p class="text-sm text-stone-500">
+                    © 2026 Softly. Made with care.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Reveal on scroll animation
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+
+        // FAQ Toggle
+        function toggleFAQ(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.plus-icon');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-content').forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('open');
+                    item.previousElementSibling.querySelector('.plus-icon').classList.remove('rotate');
+                }
+            });
+
+            // Toggle current FAQ
+            content.classList.toggle('open');
+            icon.classList.toggle('rotate');
+        }
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('input[type="email"]').value;
+            alert(`Thank you for joining! We'll reach out to ${email} soon. ✨`);
+            e.target.reset();
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

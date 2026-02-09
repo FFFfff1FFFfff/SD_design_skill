@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Softly - Digital Wellness App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Reenie+Beanie&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #FDFCF8;
+            --sage: #E8EFE8;
+            --lavender: #EFEDF4;
+            --coral: #FFB7B2;
+            --dark-text: #292524;
+            --muted-text: #78716C;
+            --stone-50: #FAFAF9;
+            --stone-100: #F5F5F4;
+            --stone-200: #E7E5E4;
+            --stone-400: #A8A29E;
+            --stone-500: #78716C;
+            --stone-800: #292524;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--dark-text);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.35;
+            z-index: 50;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 9999px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--coral);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 24px;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--coral);
+        }
+
+        .nav-cta {
+            background: var(--dark-text);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .hero-blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #FFE4E1;
+            top: 10%;
+            left: 10%;
+        }
+
+        .hero-blob-2 {
+            width: 350px;
+            height: 350px;
+            background: #E6E6FA;
+            top: 30%;
+            right: 10%;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-headline {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: reveal 0.8s ease-out forwards;
+        }
+
+        @media (min-width: 768px) {
+            .hero-headline {
+                font-size: 72px;
+            }
+        }
+
+        .hero-headline .cursive {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 1.2em;
+            color: var(--coral);
+        }
+
+        .hero-subheadline {
+            font-size: 18px;
+            color: var(--muted-text);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: reveal 0.8s ease-out 0.2s forwards;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-cta-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            opacity: 0;
+            animation: reveal 0.8s ease-out 0.4s forwards;
+        }
+
+        @media (min-width: 640px) {
+            .hero-cta-group {
+                flex-direction: row;
+            }
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark-text);
+            padding: 16px 32px;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--stone-200);
+            transition: transform 0.2s, border-color 0.2s;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            border-color: var(--coral);
+        }
+
+        /* Section Container */
+        .section {
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 40px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 48px;
+            letter-spacing: -0.025em;
+        }
+
+        /* Horizontal Scenario Scroll */
+        .scenario-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 24px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .scenario-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scenario-card {
+            flex: 0 0 288px;
+            height: 160px;
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .scenario-timestamp {
+            font-size: 14px;
+            color: var(--stone-400);
+        }
+
+        .scenario-text {
+            font-size: 20px;
+            color: var(--stone-800);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .scenario-card:hover .scenario-text {
+            color: var(--coral);
+        }
+
+        /* App Experience Preview */
+        .app-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 80px 24px;
+            position: relative;
+        }
+
+        .phone-mockup {
+            border-radius: 32px;
+            border: 8px solid var(--dark-text);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .phone-center {
+            width: 300px;
+            height: 620px;
+            background: white;
+            z-index: 3;
+        }
+
+        .phone-left {
+            width: 280px;
+            height: 580px;
+            background: var(--sage);
+            opacity: 0.8;
+            transform: translateY(48px);
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .phone-left {
+                display: flex;
+            }
+        }
+
+        .phone-right {
+            width: 280px;
+            height: 580px;
+            background: var(--lavender);
+            opacity: 0.8;
+            transform: translateY(96px);
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .phone-right {
+                display: flex;
+            }
+        }
+
+        .breathe-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--coral);
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Diary Entry Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        @media (min-width: 768px) {
+            .testimonials {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 32px;
+            border-radius: 32px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .testimonial-card:nth-child(odd) {
+            transform: rotate(1deg);
+        }
+
+        .testimonial-card:nth-child(even) {
+            transform: rotate(-1deg);
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--stone-800);
+            margin-bottom: 24px;
+        }
+
+        .testimonial-signature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .signature-line {
+            width: 32px;
+            height: 1px;
+            background: var(--stone-500);
+        }
+
+        .signature-name {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 24px;
+            color: var(--stone-500);
+        }
+
+        /* Waitlist Conversion */
+        .waitlist {
+            padding: 120px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waitlist-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .waitlist-blob-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--coral);
+            top: -100px;
+            left: -100px;
+        }
+
+        .waitlist-blob-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--lavender);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .waitlist-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--dark-text);
+            border-radius: 16px;
+            margin: 0 auto 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .waitlist-icon::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--coral);
+            position: absolute;
+        }
+
+        .waitlist-form {
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .waitlist-form {
+                flex-direction: row;
+            }
+        }
+
+        .waitlist-input {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 9999px;
+            background: var(--stone-50);
+            border: 1px solid transparent;
+            font-size: 16px;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .waitlist-input:focus {
+            outline: none;
+            border-color: var(--coral);
+        }
+
+        .waitlist-submit {
+            background: var(--dark-text);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: transform 0.2s;
+        }
+
+        .waitlist-submit:hover {
+            transform: scale(1.05);
+        }
+
+        /* FAQ Accordion */
+        .faq {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--stone-100);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .faq-header {
+            padding: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: transform 0.5s ease-in-out;
+            flex-shrink: 0;
+        }
+
+        .faq-icon::before,
+        .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: var(--dark-text);
+            border-radius: 2px;
+        }
+
+        .faq-icon::before {
+            width: 16px;
+            height: 2px;
+            top: 11px;
+            left: 4px;
+        }
+
+        .faq-icon::after {
+            width: 2px;
+            height: 16px;
+            top: 4px;
+            left: 11px;
+            transition: opacity 0.3s;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        .faq-content-inner {
+            padding: 0 24px 24px;
+            color: var(--muted-text);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-content {
+            max-height: 500px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--muted-text);
+            font-size: 14px;
+        }
+
+        /* Scroll reveal animation */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal-on-scroll.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Grain Overlay -->
+    <div class="grain-overlay"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo"></div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#testimonials">Stories</a>
+        </div>
+        <a href="#waitlist" class="nav-cta">Join waitlist</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+
+        <h1 class="hero-headline">
+            Find your <span class="cursive">rhythm</span><br>
+            in a world that never stops
+        </h1>
+        <p class="hero-subheadline">
+            Softly helps you slow down, breathe deep, and reconnect with what matters.
+            A digital companion for intentional living.
+        </p>
+        <div class="hero-cta-group">
+            <a href="#waitlist" class="btn-primary">Join the waitlist</a>
+            <a href="#learn-more" class="btn-secondary">Learn more</a>
+        </div>
+    </section>
+
+    <!-- Horizontal Scenario Scroll -->
+    <section class="section reveal-on-scroll">
+        <h2 class="section-title">Moments that matter</h2>
+        <div class="scenario-scroll">
+            <div class="scenario-card">
+                <div class="scenario-timestamp">Morning, 7:23 AM</div>
+                <div class="scenario-text">Start your day with intention, not notifications</div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-timestamp">Midday, 12:45 PM</div>
+                <div class="scenario-text">Take a mindful break between meetings</div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-timestamp">Afternoon, 3:30 PM</div>
+                <div class="scenario-text">Pause and check in with yourself</div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-timestamp">Evening, 8:15 PM</div>
+                <div class="scenario-text">Wind down with guided reflection</div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-timestamp">Night, 10:00 PM</div>
+                <div class="scenario-text">Release the day, welcome rest</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Experience Preview -->
+    <section class="section reveal-on-scroll" id="features">
+        <h2 class="section-title">Designed for calm</h2>
+        <div class="app-preview">
+            <div class="phone-mockup phone-left"></div>
+            <div class="phone-mockup phone-center">
+                <button class="breathe-button">Breathe</button>
+            </div>
+            <div class="phone-mockup phone-right"></div>
+        </div>
+    </section>
+
+    <!-- Diary Entry Testimonials -->
+    <section class="section reveal-on-scroll" id="testimonials">
+        <h2 class="section-title">Stories from our community</h2>
+        <div class="testimonials">
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "I used to check my phone 100+ times a day. Softly helped me create space
+                    between impulse and action. Now I actually feel present with my kids."
+                </p>
+                <div class="testimonial-signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Maya R.</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "This app doesn't demand my attention—it invites it. The breathing exercises
+                    have become my favorite part of the morning routine."
+                </p>
+                <div class="testimonial-signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Alex T.</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Finally, an app that respects my time instead of stealing it. The diary
+                    feature is simple but profound. I've been using it for 3 months straight."
+                </p>
+                <div class="testimonial-signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Jordan K.</div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Softly is like having a wise friend in my pocket. The design is beautiful,
+                    the interactions are thoughtful, and it genuinely makes me feel better."
+                </p>
+                <div class="testimonial-signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Sam L.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="section reveal-on-scroll">
+        <h2 class="section-title">Questions?</h2>
+        <div class="faq">
+            <div class="faq-item">
+                <div class="faq-header">
+                    <span>What makes Softly different?</span>
+                    <div class="faq-icon"></div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-content-inner">
+                        Softly is intentionally designed to slow you down, not speed you up.
+                        We use gentle animations, warm colors, and thoughtful interactions to
+                        create a truly calming digital experience.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-header">
+                    <span>When will the app launch?</span>
+                    <div class="faq-icon"></div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-content-inner">
+                        We're currently in private beta. Join the waitlist to get early access
+                        and be notified when we launch publicly in Spring 2026.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-header">
+                    <span>Is Softly free to use?</span>
+                    <div class="faq-icon"></div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-content-inner">
+                        Softly will be free with core features always accessible. We'll offer
+                        a premium tier with advanced journaling, extended breathing exercises,
+                        and personalized insights.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-header">
+                    <span>Which platforms do you support?</span>
+                    <div class="faq-icon"></div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-content-inner">
+                        Softly will launch first on iOS and Android, with a web companion
+                        coming shortly after. All your data syncs seamlessly across devices.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Conversion -->
+    <section class="waitlist reveal-on-scroll" id="waitlist">
+        <div class="waitlist-blob waitlist-blob-1"></div>
+        <div class="waitlist-blob waitlist-blob-2"></div>
+
+        <div class="waitlist-icon"></div>
+        <h2 class="section-title">Join the movement</h2>
+        <p class="hero-subheadline" style="margin-bottom: 32px;">
+            Be among the first to experience digital wellness, redefined.
+            No spam, just updates that matter.
+        </p>
+
+        <form class="waitlist-form" onsubmit="return false;">
+            <input
+                type="email"
+                class="waitlist-input"
+                placeholder="your@email.com"
+                required
+            />
+            <button type="submit" class="waitlist-submit">Join waitlist</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Softly. Designed with care for digital wellness.</p>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const wasActive = item.classList.contains('active');
+
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Waitlist form submission
+        document.querySelector('.waitlist-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const button = e.target.querySelector('button');
+
+            button.textContent = 'Thank you!';
+            button.style.background = 'var(--coral)';
+            input.value = '';
+
+            setTimeout(() => {
+                button.textContent = 'Join waitlist';
+                button.style.background = 'var(--dark-text)';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

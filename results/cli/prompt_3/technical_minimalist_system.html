@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Minimalist Design System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #F7F7F5;
+            color: #3A3A38;
+        }
+
+        .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Mosaic Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='1200' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='mosaic' x='0' y='0' width='1200' height='800' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='0' width='400' height='300' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='400' y='0' width='250' height='150' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='650' y='0' width='550' height='300' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='400' y='150' width='250' height='150' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='0' y='300' width='250' height='250' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='250' y='300' width='150' height='150' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='250' y='450' width='350' height='350' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='0' y='550' width='250' height='250' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='600' y='300' width='300' height='200' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='900' y='300' width='300' height='200' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3Crect x='600' y='500' width='600' height='300' fill='%23F7F7F5' stroke='%233A3A38' stroke-width='0.5' stroke-opacity='0.3'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23mosaic)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hairline-border {
+            border: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        .hairline-divider {
+            border-top: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        .corner-markers::before,
+        .corner-markers::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #1A3C2B;
+        }
+
+        .corner-markers::before {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-markers::after {
+            top: -1px;
+            right: -1px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-markers-bottom::before,
+        .corner-markers-bottom::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #1A3C2B;
+        }
+
+        .corner-markers-bottom::before {
+            bottom: -1px;
+            left: -1px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-markers-bottom::after {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .luminosity-image {
+            mix-blend-mode: luminosity;
+            opacity: 0.9;
+            transition: all 0.3s ease-out;
+        }
+
+        .luminosity-image:hover {
+            mix-blend-mode: normal;
+            opacity: 1;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg) translateX(140px) rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg) translateX(140px) rotate(-360deg);
+            }
+        }
+
+        .orbit-node {
+            animation: orbit 20s linear infinite;
+        }
+
+        .btn-ghost {
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            background: transparent;
+            padding: 8px 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s ease-out;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(26, 60, 43, 0.05);
+        }
+
+        .btn-solid {
+            background: #1A3C2B;
+            color: #F7F7F5;
+            border: 1px solid #1A3C2B;
+            padding: 8px 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.2s ease-out;
+        }
+
+        .btn-solid:hover {
+            background: #0f2519;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <!-- Technical Navigation -->
+        <header class="fixed top-0 left-0 right-0 bg-[#F7F7F5] z-50" style="border-bottom: 1px solid rgba(58, 58, 56, 0.2);">
+            <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="w-8 h-8 bg-[#1A3C2B] flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 2h12v12H2z" stroke="#F7F7F5" stroke-width="1"/>
+                        <circle cx="8" cy="8" r="2" fill="#F7F7F5"/>
+                    </svg>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.1em]">
+                    <a href="#" class="hover:text-[#1A3C2B] transition-colors">01. Features</a>
+                    <a href="#" class="hover:text-[#1A3C2B] transition-colors">02. System</a>
+                    <a href="#" class="hover:text-[#1A3C2B] transition-colors">03. Pricing</a>
+                    <a href="#" class="hover:text-[#1A3C2B] transition-colors">04. Docs</a>
+                </nav>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-4 font-mono">
+                    <button class="btn-ghost">Sign In</button>
+                    <button class="btn-solid">Get Started</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="pt-32 pb-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h1 class="font-space text-8xl leading-[0.9] tracking-tight text-[#1A3C2B] mb-8">
+                            Technical<br/>Minimalist<br/>System
+                        </h1>
+                        <div class="flex items-start gap-4 mt-8">
+                            <div class="w-px h-12 bg-[#3A3A38]"></div>
+                            <p class="font-mono text-sm uppercase tracking-[0.1em] text-[#3A3A38]">
+                                A sophisticated structural design<br/>
+                                inspired by technical blueprints<br/>
+                                and high-end UI wireframes
+                            </p>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="inline-flex items-center gap-2 mt-12 hairline-border px-3 py-1">
+                            <div class="w-2 h-2 bg-[#1A3C2B]"></div>
+                            <span class="font-mono text-[10px] uppercase tracking-widest">System Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Abstract Wireframe Graphic -->
+                    <div class="relative w-full aspect-square hairline-border bg-white p-8">
+                        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400">
+                            <circle cx="200" cy="200" r="150" fill="none" stroke="#3A3A38" stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
+                            <circle cx="200" cy="200" r="8" fill="#1A3C2B"/>
+                        </svg>
+                        <img src="data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='400' fill='%23ddd'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='14' fill='%23999'%3EIMAGE%3C/text%3E%3C/svg%3E"
+                             alt="Design"
+                             class="luminosity-image w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="hairline-divider"></div>
+
+        <!-- Bento Feature Grid -->
+        <section class="py-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-2 gap-px" style="background: #3A3A38;">
+                    <!-- Feature 1 -->
+                    <div class="bg-[#F7F7F5] p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-1 h-6 bg-[#FF8C69]"></div>
+                            <h3 class="font-mono text-xs uppercase tracking-[0.1em]">Structural Precision</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-6">
+                            Razor-thin hairlines and interlocking panels create a technical blueprint aesthetic with zero depth effects.
+                        </p>
+                        <div class="hairline-border bg-white p-4">
+                            <pre class="font-mono text-[10px] text-[#1A3C2B]">border: 1px solid rgba(58,58,56,0.2)
+border-radius: 0px
+box-shadow: none</pre>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="bg-[#F7F7F5] p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-1 h-6 bg-[#9EFFBF]"></div>
+                            <h3 class="font-mono text-xs uppercase tracking-[0.1em]">Monospaced Metadata</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-6">
+                            All labels and technical data rendered in JetBrains Mono with wide letter-spacing for maximum clarity.
+                        </p>
+                        <div class="flex gap-2">
+                            <div class="hairline-border bg-[#1A3C2B] text-white px-3 py-1 font-mono text-[10px] uppercase tracking-widest">active</div>
+                            <div class="hairline-border bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-widest">ready</div>
+                            <div class="hairline-border bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-widest">online</div>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="bg-[#F7F7F5] p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-1 h-6 bg-[#F4D35E]"></div>
+                            <h3 class="font-mono text-xs uppercase tracking-[0.1em]">Luminosity Blend</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-6">
+                            Images display at 90% opacity with luminosity blend mode, revealing full color on hover interaction.
+                        </p>
+                        <div class="hairline-border bg-white p-4">
+                            <pre class="font-mono text-[10px] text-[#1A3C2B]">mix-blend-mode: luminosity
+opacity: 0.9
+transition: 0.3s ease-out</pre>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="bg-[#F7F7F5] p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-1 h-6 bg-[#1A3C2B]"></div>
+                            <h3 class="font-mono text-xs uppercase tracking-[0.1em]">Forest Green Primary</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-6">
+                            Prestige forest green (#1A3C2B) serves as the primary brand color against paper background.
+                        </p>
+                        <div class="flex gap-3">
+                            <div class="w-12 h-12 bg-[#1A3C2B] hairline-border"></div>
+                            <div class="w-12 h-12 bg-[#FF8C69] hairline-border"></div>
+                            <div class="w-12 h-12 bg-[#9EFFBF] hairline-border"></div>
+                            <div class="w-12 h-12 bg-[#F4D35E] hairline-border"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="hairline-divider"></div>
+
+        <!-- Network Topology Graph -->
+        <section class="py-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-space text-6xl tracking-tight text-[#1A3C2B] mb-4">System Architecture</h2>
+                    <p class="font-mono text-xs uppercase tracking-[0.1em]">Network Topology Visualization</p>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="relative w-[450px] h-[450px] hairline-border rounded-sm bg-white">
+                        <svg class="w-full h-full" viewBox="0 0 450 450">
+                            <!-- Center node -->
+                            <circle cx="225" cy="225" r="8" fill="#1A3C2B"/>
+
+                            <!-- Dashed orbit path -->
+                            <circle cx="225" cy="225" r="140" fill="none" stroke="#3A3A38" stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
+
+                            <!-- Connection lines -->
+                            <line x1="225" y1="225" x2="225" y2="85" stroke="#3A3A38" stroke-width="1" opacity="0.2"/>
+                            <line x1="225" y1="225" x2="346" y2="295" stroke="#3A3A38" stroke-width="1" opacity="0.2"/>
+                            <line x1="225" y1="225" x2="104" y2="295" stroke="#3A3A38" stroke-width="1" opacity="0.2"/>
+
+                            <!-- Orbiting nodes -->
+                            <g transform="translate(225, 225)">
+                                <g class="orbit-node">
+                                    <circle cx="0" cy="0" r="6" fill="#FF8C69"/>
+                                </g>
+                            </g>
+
+                            <g transform="translate(225, 225)">
+                                <g class="orbit-node" style="animation-delay: 6.66s;">
+                                    <circle cx="0" cy="0" r="6" fill="#9EFFBF"/>
+                                </g>
+                            </g>
+
+                            <g transform="translate(225, 225)">
+                                <g class="orbit-node" style="animation-delay: 13.33s;">
+                                    <circle cx="0" cy="0" r="6" fill="#F4D35E"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="hairline-divider"></div>
+
+        <!-- Testimonial Cards -->
+        <section class="py-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="hairline-border bg-white p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M6 8C6 6 7 4 9 4C8 4 7 5 7 6C7 7 8 8 9 8H6Z" fill="#1A3C2B"/>
+                                <path d="M14 8C14 6 15 4 17 4C16 4 15 5 15 6C15 7 16 8 17 8H14Z" fill="#1A3C2B"/>
+                            </svg>
+                            <div class="flex gap-1">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-mono text-xs leading-relaxed mb-6">
+                            The structural precision and flat design language create a uniquely technical aesthetic that stands apart from traditional design systems.
+                        </p>
+                        <div class="pt-4 border-t border-[rgba(58,58,56,0.2)] flex items-center gap-3">
+                            <div class="w-10 h-10 bg-[#1A3C2B]"></div>
+                            <div>
+                                <div class="font-mono text-[10px] font-medium">Sarah Chen</div>
+                                <div class="font-mono text-[10px] text-[#3A3A38] opacity-60">Lead Designer</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="hairline-border bg-white p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M6 8C6 6 7 4 9 4C8 4 7 5 7 6C7 7 8 8 9 8H6Z" fill="#1A3C2B"/>
+                                <path d="M14 8C14 6 15 4 17 4C16 4 15 5 15 6C15 7 16 8 17 8H14Z" fill="#1A3C2B"/>
+                            </svg>
+                            <div class="flex gap-1">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-mono text-xs leading-relaxed mb-6">
+                            Zero shadows and pure hairline borders give every interface a crisp blueprint quality. The monospaced typography adds perfect technical clarity.
+                        </p>
+                        <div class="pt-4 border-t border-[rgba(58,58,56,0.2)] flex items-center gap-3">
+                            <div class="w-10 h-10 bg-[#FF8C69]"></div>
+                            <div>
+                                <div class="font-mono text-[10px] font-medium">Marcus Wu</div>
+                                <div class="font-mono text-[10px] text-[#3A3A38] opacity-60">Frontend Architect</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="hairline-border bg-white p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M6 8C6 6 7 4 9 4C8 4 7 5 7 6C7 7 8 8 9 8H6Z" fill="#1A3C2B"/>
+                                <path d="M14 8C14 6 15 4 17 4C16 4 15 5 15 6C15 7 16 8 17 8H14Z" fill="#1A3C2B"/>
+                            </svg>
+                            <div class="flex gap-1">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="#F4D35E">
+                                    <polygon points="5,0 6,4 10,4 7,6 8,10 5,8 2,10 3,6 0,4 4,4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-mono text-xs leading-relaxed mb-6">
+                            The mosaic background pattern and bento grid layouts provide structure without visual noise. Forest green on paper is sophisticated and refined.
+                        </p>
+                        <div class="pt-4 border-t border-[rgba(58,58,56,0.2)] flex items-center gap-3">
+                            <div class="w-10 h-10 bg-[#9EFFBF]"></div>
+                            <div>
+                                <div class="font-mono text-[10px] font-medium">Elena Rodriguez</div>
+                                <div class="font-mono text-[10px] text-[#3A3A38] opacity-60">Product Designer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="hairline-divider"></div>
+
+        <!-- Technical Form CTA -->
+        <section class="py-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-space text-6xl tracking-tight text-[#1A3C2B] mb-4">Get Started</h2>
+                    <p class="font-mono text-xs uppercase tracking-[0.1em]">Access Technical Minimalist System</p>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="relative w-full max-w-[640px] hairline-border bg-[#F7F7F5] p-8 corner-markers corner-markers-bottom">
+                        <form>
+                            <div class="mb-6">
+                                <label class="font-mono text-[10px] uppercase tracking-[0.1em] block mb-2">Full Name</label>
+                                <input type="text"
+                                       class="w-full bg-white hairline-border px-4 py-3 text-sm focus:outline-none focus:border-[#1A3C2B]"
+                                       placeholder="Enter your full name">
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="font-mono text-[10px] uppercase tracking-[0.1em] block mb-2">Email Address</label>
+                                <input type="email"
+                                       class="w-full bg-white hairline-border px-4 py-3 text-sm focus:outline-none focus:border-[#1A3C2B]"
+                                       placeholder="name@company.com">
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="font-mono text-[10px] uppercase tracking-[0.1em] block mb-2">Organization</label>
+                                <input type="text"
+                                       class="w-full bg-white hairline-border px-4 py-3 text-sm focus:outline-none focus:border-[#1A3C2B]"
+                                       placeholder="Your organization name">
+                            </div>
+
+                            <div class="mb-8">
+                                <label class="font-mono text-[10px] uppercase tracking-[0.1em] block mb-2">Project Type</label>
+                                <select class="w-full bg-white hairline-border px-4 py-3 text-sm focus:outline-none focus:border-[#1A3C2B]">
+                                    <option>SaaS Platform</option>
+                                    <option>Enterprise Dashboard</option>
+                                    <option>Design System</option>
+                                    <option>Marketing Site</option>
+                                </select>
+                            </div>
+
+                            <button type="submit"
+                                    class="w-full bg-[#1A3C2B] text-white hairline-border py-4 font-mono text-xs uppercase tracking-[0.1em] hover:bg-[#0f2519] transition-colors">
+                                Request Access
+                            </button>
+
+                            <p class="font-mono text-[10px] text-center mt-4 opacity-60">
+                                Processing time: 24-48 hours
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-8 border-t border-[rgba(58,58,56,0.2)]">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-[#1A3C2B]"></div>
+                        <span class="font-mono text-[10px] uppercase tracking-[0.1em]">Technical Minimalist</span>
+                    </div>
+
+                    <div class="flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.1em]">
+                        <a href="#" class="hover:text-[#1A3C2B] transition-colors">Documentation</a>
+                        <a href="#" class="hover:text-[#1A3C2B] transition-colors">GitHub</a>
+                        <a href="#" class="hover:text-[#1A3C2B] transition-colors">Support</a>
+                    </div>
+
+                    <div class="font-mono text-[10px] opacity-60">
+                        © 2026 — v1.0.0
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

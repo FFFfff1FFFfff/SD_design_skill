@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Minimalist Design System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=General+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colors */
+            --paper: #F7F7F5;
+            --forest: #1A3C2B;
+            --grid: #3A3A38;
+            --coral: #FF8C69;
+            --mint: #9EFFBF;
+            --gold: #F4D35E;
+            --white: #FFFFFF;
+
+            /* Fonts */
+            --font-header: 'Space Grotesk', sans-serif;
+            --font-body: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--paper);
+            color: var(--forest);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Mosaic Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                /* Vertical lines */
+                repeating-linear-gradient(90deg, transparent, transparent 149.5px, rgba(58, 58, 56, 0.3) 149.5px, rgba(58, 58, 56, 0.3) 150px),
+                /* Horizontal lines */
+                repeating-linear-gradient(0deg, transparent, transparent 149.5px, rgba(58, 58, 56, 0.3) 149.5px, rgba(58, 58, 56, 0.3) 150px),
+                /* Large blocks */
+                repeating-linear-gradient(90deg, transparent, transparent 449.5px, rgba(58, 58, 56, 0.3) 449.5px, rgba(58, 58, 56, 0.3) 450px),
+                repeating-linear-gradient(0deg, transparent, transparent 299.5px, rgba(58, 58, 56, 0.3) 299.5px, rgba(58, 58, 56, 0.3) 300px);
+            background-size: 150px 150px, 150px 150px, 450px 450px, 450px 300px;
+            background-color: var(--paper);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--paper);
+            border-bottom: 1px solid rgba(58, 58, 56, 0.2);
+            z-index: 1000;
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-box {
+            width: 32px;
+            height: 32px;
+            background-color: var(--forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0;
+        }
+
+        .logo-box svg {
+            width: 16px;
+            height: 16px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            color: var(--forest);
+            transition: opacity 200ms ease-out;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.6;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 12px 24px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 200ms ease-out;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--forest);
+            color: var(--forest);
+        }
+
+        .btn-ghost:hover {
+            background: var(--forest);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--forest);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 64px;
+        }
+
+        .section {
+            border-bottom: 1px solid rgba(58, 58, 56, 0.2);
+            padding: 96px 48px;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-header);
+            font-size: 96px;
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+            color: var(--forest);
+            margin-bottom: 32px;
+        }
+
+        .hero-subtext {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--forest);
+        }
+
+        .hero-subtext::before {
+            content: '';
+            width: 1px;
+            height: 32px;
+            background: var(--forest);
+        }
+
+        .hero-graphic {
+            position: relative;
+            aspect-ratio: 1;
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        .orbit-path {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+            border: 1px dashed rgba(58, 58, 56, 0.3);
+            border-radius: 50%;
+        }
+
+        .center-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--forest) 0%, var(--grid) 100%);
+            mix-blend-mode: luminosity;
+            opacity: 0.9;
+            transition: all 300ms ease-out;
+        }
+
+        .center-image:hover {
+            mix-blend-mode: normal;
+            opacity: 1;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .bento-cell {
+            background: var(--paper);
+            padding: 32px;
+            border: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        .bento-header {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-left: 12px;
+            border-left: 2px solid var(--forest);
+        }
+
+        .bento-cell:nth-child(1) .bento-header { border-left-color: var(--coral); }
+        .bento-cell:nth-child(2) .bento-header { border-left-color: var(--mint); }
+        .bento-cell:nth-child(3) .bento-header { border-left-color: var(--gold); }
+        .bento-cell:nth-child(4) .bento-header { border-left-color: var(--forest); }
+
+        .mockup-box {
+            background: var(--white);
+            border: 1px solid rgba(58, 58, 56, 0.1);
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            line-height: 1.6;
+            color: var(--grid);
+        }
+
+        .color-chip {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin: 4px;
+            border: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        /* Network Topology Graph */
+        .topology-section {
+            text-align: center;
+        }
+
+        .topology-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 32px;
+        }
+
+        .topology-graph {
+            max-width: 450px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .central-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        .orbit-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+        }
+
+        .orbit-node:nth-child(2) {
+            background: var(--coral);
+            animation: orbit 20s linear infinite;
+        }
+
+        .orbit-node:nth-child(3) {
+            background: var(--mint);
+            animation: orbit 20s linear infinite;
+            animation-delay: -6.66s;
+        }
+
+        .orbit-node:nth-child(4) {
+            background: var(--gold);
+            animation: orbit 20s linear infinite;
+            animation-delay: -13.33s;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg) translateX(140px) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg) translateX(140px) rotate(-360deg);
+            }
+        }
+
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 1px;
+            background: rgba(58, 58, 56, 0.2);
+            transform-origin: left center;
+        }
+
+        .connection-line:nth-child(5) { transform: rotate(0deg); }
+        .connection-line:nth-child(6) { transform: rotate(120deg); }
+        .connection-line:nth-child(7) { transform: rotate(240deg); }
+
+        /* Status Badges */
+        .status-badges {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            border: 1px solid rgba(26, 60, 43, 0.2);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+        }
+
+        .status-badge:nth-child(1) .status-dot { background: var(--forest); }
+        .status-badge:nth-child(2) .status-dot { background: var(--coral); }
+        .status-badge:nth-child(3) .status-dot { background: var(--mint); }
+
+        /* Technical Form CTA */
+        .form-cta {
+            max-width: 640px;
+            margin: 0 auto;
+            background: var(--paper);
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            padding: 48px;
+            position: relative;
+        }
+
+        .corner-marker {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: var(--forest);
+        }
+
+        .corner-marker.top-left {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid var(--forest);
+            border-left: 2px solid var(--forest);
+        }
+
+        .corner-marker.top-right {
+            top: -1px;
+            right: -1px;
+            border-top: 2px solid var(--forest);
+            border-right: 2px solid var(--forest);
+        }
+
+        .corner-marker.bottom-left {
+            bottom: -1px;
+            left: -1px;
+            border-bottom: 2px solid var(--forest);
+            border-left: 2px solid var(--forest);
+        }
+
+        .corner-marker.bottom-right {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid var(--forest);
+            border-right: 2px solid var(--forest);
+        }
+
+        .form-cta h2 {
+            font-family: var(--font-header);
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--white);
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            border-radius: 2px;
+            font-family: var(--font-body);
+            font-size: 16px;
+            transition: border-color 200ms ease-out;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--forest);
+        }
+
+        .form-footer {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 16px;
+            color: var(--grid);
+        }
+
+        /* Testimonial Cards */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            border: 1px solid rgba(58, 58, 56, 0.2);
+            padding: 24px;
+            background: var(--paper);
+        }
+
+        .testimonial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .quote-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--forest);
+        }
+
+        .stars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .star {
+            width: 10px;
+            height: 10px;
+            fill: var(--gold);
+        }
+
+        .testimonial-body {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            color: var(--grid);
+        }
+
+        .testimonial-footer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        .testimonial-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--forest);
+            border-radius: 0;
+        }
+
+        .testimonial-author {
+            font-family: var(--font-mono);
+            font-size: 10px;
+        }
+
+        .author-name {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .author-title {
+            opacity: 0.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 64px 48px 32px;
+            border-top: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 48px;
+            max-width: 1400px;
+            margin: 0 auto 32px;
+        }
+
+        .footer-column h3 {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 8px;
+        }
+
+        .footer-column a {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            color: var(--forest);
+            opacity: 0.7;
+            transition: opacity 200ms ease-out;
+        }
+
+        .footer-column a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.5;
+            padding-top: 32px;
+            border-top: 1px solid rgba(58, 58, 56, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section {
+                padding: 64px 24px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 48px;
+            }
+
+            .bento-grid,
+            .testimonials,
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo-box">
+            <svg viewBox="0 0 24 24">
+                <rect x="6" y="6" width="12" height="12" stroke-width="2"/>
+            </svg>
+        </div>
+        <div class="nav-links">
+            <a href="#features">01. FEATURES</a>
+            <a href="#pricing">02. PRICING</a>
+            <a href="#about">03. ABOUT</a>
+            <a href="#contact">04. CONTACT</a>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-ghost">Sign In</button>
+            <button class="btn btn-primary">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="section">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Technical Excellence Through Minimalist Design</h1>
+                    <div class="hero-subtext">PRECISION • STRUCTURE • CLARITY</div>
+                </div>
+                <div class="hero-graphic">
+                    <div class="orbit-container">
+                        <div class="orbit-path"></div>
+                        <div class="center-image"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bento Feature Grid -->
+        <section class="section">
+            <div class="bento-grid">
+                <div class="bento-cell">
+                    <div class="bento-header">Modular Components</div>
+                    <div class="mockup-box">
+                        <div>// Component System</div>
+                        <div>const Button = ({ variant }) => {</div>
+                        <div>&nbsp;&nbsp;return &lt;button&gt;</div>
+                        <div>}</div>
+                    </div>
+                </div>
+                <div class="bento-cell">
+                    <div class="bento-header">Design Tokens</div>
+                    <div class="mockup-box">
+                        <div>Color Palette</div>
+                        <div style="margin-top: 12px;">
+                            <span class="color-chip" style="background: #1A3C2B;"></span>
+                            <span class="color-chip" style="background: #FF8C69;"></span>
+                            <span class="color-chip" style="background: #9EFFBF;"></span>
+                            <span class="color-chip" style="background: #F4D35E;"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bento-cell">
+                    <div class="bento-header">Type System</div>
+                    <div class="mockup-box">
+                        <div style="font-family: var(--font-header); font-size: 18px; margin-bottom: 8px;">Space Grotesk</div>
+                        <div style="font-family: var(--font-body); font-size: 14px; margin-bottom: 8px;">General Sans</div>
+                        <div style="font-family: var(--font-mono); font-size: 12px;">JetBrains Mono</div>
+                    </div>
+                </div>
+                <div class="bento-cell">
+                    <div class="bento-header">Grid Structure</div>
+                    <div class="mockup-box">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; height: 80px;">
+                            <div style="background: rgba(26, 60, 43, 0.1); border: 1px solid rgba(26, 60, 43, 0.2);"></div>
+                            <div style="background: rgba(26, 60, 43, 0.1); border: 1px solid rgba(26, 60, 43, 0.2);"></div>
+                            <div style="background: rgba(26, 60, 43, 0.1); border: 1px solid rgba(26, 60, 43, 0.2);"></div>
+                            <div style="background: rgba(26, 60, 43, 0.1); border: 1px solid rgba(26, 60, 43, 0.2);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Network Topology Graph -->
+        <section class="section topology-section">
+            <div class="topology-label">Design System Architecture</div>
+            <div class="topology-graph">
+                <div class="central-node"></div>
+                <div class="orbit-node"></div>
+                <div class="orbit-node"></div>
+                <div class="orbit-node"></div>
+                <div class="connection-line"></div>
+                <div class="connection-line"></div>
+                <div class="connection-line"></div>
+            </div>
+        </section>
+
+        <!-- Status Badges -->
+        <section class="section">
+            <div class="status-badges">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>Operational</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>Processing</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>Complete</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Form CTA -->
+        <section class="section">
+            <div class="form-cta">
+                <div class="corner-marker top-left"></div>
+                <div class="corner-marker top-right"></div>
+                <div class="corner-marker bottom-left"></div>
+                <div class="corner-marker bottom-right"></div>
+
+                <h2>Start Your Project</h2>
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" placeholder="you@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" placeholder="John Smith">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
+                    <div class="form-footer">No Credit Card Required</div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Testimonial Cards -->
+        <section class="section">
+            <div class="testimonials">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <svg class="quote-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+                        </svg>
+                        <div class="stars">
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                    <div class="testimonial-body">
+                        "The technical precision and minimalist approach transformed our product. Every pixel serves a purpose."
+                    </div>
+                    <div class="testimonial-footer">
+                        <div class="testimonial-avatar"></div>
+                        <div class="testimonial-author">
+                            <div class="author-name">Sarah Chen</div>
+                            <div class="author-title">Lead Designer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <svg class="quote-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+                        </svg>
+                        <div class="stars">
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                    <div class="testimonial-body">
+                        "A design system that engineers actually understand. The technical foundation makes implementation seamless."
+                    </div>
+                    <div class="testimonial-footer">
+                        <div class="testimonial-avatar"></div>
+                        <div class="testimonial-author">
+                            <div class="author-name">Marcus Weber</div>
+                            <div class="author-title">Engineering Manager</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <svg class="quote-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+                        </svg>
+                        <div class="stars">
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                    <div class="testimonial-body">
+                        "Clean, structural, and incredibly scalable. The blueprint aesthetic gives our brand a unique edge."
+                    </div>
+                    <div class="testimonial-footer">
+                        <div class="testimonial-avatar"></div>
+                        <div class="testimonial-author">
+                            <div class="author-name">Priya Kumar</div>
+                            <div class="author-title">Product Director</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <div class="logo-box" style="margin-bottom: 16px;">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="6" y="6" width="12" height="12" stroke-width="2"/>
+                    </svg>
+                </div>
+                <p style="font-family: var(--font-mono); font-size: 10px; opacity: 0.7;">Technical excellence through minimalist design principles.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="#">01. Features</a></li>
+                    <li><a href="#">02. Pricing</a></li>
+                    <li><a href="#">03. Documentation</a></li>
+                    <li><a href="#">04. Changelog</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">01. About</a></li>
+                    <li><a href="#">02. Careers</a></li>
+                    <li><a href="#">03. Blog</a></li>
+                    <li><a href="#">04. Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <ul>
+                    <li><a href="#">hello@technical.design</a></li>
+                    <li><a href="#">+1 (555) 000-0000</a></li>
+                    <li><a href="#">San Francisco, CA</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Technical Minimalist Design System. All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

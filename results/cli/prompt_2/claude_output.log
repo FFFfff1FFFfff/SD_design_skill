@@ -1,0 +1,32 @@
+Perfect! I've generated the complete Softly-themed landing page HTML file. Here's what I've created:
+
+## ✨ Softly Digital Wellness Landing Page
+
+The design has been saved to: `/workspace/SD_design_skill/.superdesign/design_iterations/softly-landing-page.html`
+
+### Key Features Implemented:
+
+**🎨 Visual Style:**
+- Warm, desaturated pastel palette (#FDFCF8 background, #FFB7B2 coral accent, sage & lavender accents)
+- 35% opacity SVG grain/noise overlay for tactile, paper-like feel
+- High-radius blurs on background blobs (80-100px)
+- Soft shadows and 2rem-4rem border radius throughout
+- Typography: 'Outfit' sans-serif paired with 'Reenie Beanie' cursive
+
+**📱 Layout Sections:**
+1. **Floating Nav Bar** - 70% white opacity, 20px backdrop-blur, pill-shaped with coral logo
+2. **Hero Section** - 72px headline with cursive emphasis, animated floating background blobs
+3. **Horizontal Scenario Scroll** - 288x160px cards with timestamps, scroll-snap behavior
+4. **App Preview** - Three cascading phone mockups with pulsing coral "Breathe" button
+5. **Testimonials** - Rotated cards (±1°) with handwritten signatures in Reenie Beanie
+6. **Interactive FAQ** - Smooth accordion with rotating plus icons
+7. **Waitlist CTA** - Gradient background blobs, rounded-full input with scale-up submit button
+
+**✨ Animations:**
+- Reveal-on-scroll (translateY 30px → 0, opacity 0 → 1, 0.8s duration)
+- Floating blob animations (6s loop, ±10px translateY)
+- Pulsing breathe button
+- Smooth accordion expand/collapse (500ms ease-in-out)
+- Hover effects on cards and CTAs
+
+The page is fully responsive, mobile-first, and includes all the special components you requested. You can open the HTML file directly in a browser to view the design!
