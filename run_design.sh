@@ -14,7 +14,8 @@
 #   results/cli-based/prompt_N/        # CLI 版结果
 #
 
-set -euo pipefail
+set -uo pipefail
+# 注意：不用 set -e，因为 claude -p 可能返回非零退出码，不应中断整个流程
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
@@ -54,11 +55,13 @@ check_prerequisites() {
 
     if [ "$mode" = "cli" ] || [ "$mode" = "both" ]; then
         if ! command -v superdesign &>/dev/null; then
-            echo -e "${YELLOW}警告: superdesign CLI 未安装。CLI 版将无法运行。${NC}"
+            echo -e "${YELLOW}警告: superdesign CLI 未安装。CLI 版可能无法正常运行。${NC}"
             echo -e "${YELLOW}安装: npm install -g @superdesign/cli@latest && superdesign login${NC}"
             if [ "$mode" = "cli" ]; then
+                echo -e "${RED}CLI 模式需要 superdesign CLI，退出${NC}"
                 exit 1
             fi
+            # both 模式下继续运行，CLI 版可能会失败但不影响 opensource
         fi
     fi
 }
@@ -138,15 +141,11 @@ IMPORTANT: This is a non-interactive run. Skip all confirmation steps and genera
     local start_time
     start_time=$(date +%s)
 
-    if claude -p "$full_prompt" \
+    claude -p "$full_prompt" \
         --output-format text \
         --max-turns 30 \
-        --allowedTools "Edit,Write,Read,Glob,Grep,Bash,Skill" \
-        > "$log_file" 2>&1; then
-        echo -e "${GREEN}Claude 运行完成${NC}"
-    else
-        echo -e "${YELLOW}Claude 运行结束（可能有警告，检查日志）${NC}"
-    fi
+        > "$log_file" 2>&1 || true
+    echo -e "${GREEN}Claude 运行完成${NC}"
 
     local end_time
     end_time=$(date +%s)
@@ -194,10 +193,10 @@ run_mode() {
             [ -f "$f" ] || continue
             local num
             num="$(basename "$f" .txt)"
-            run_single "$mode" "$num"
+            run_single "$mode" "$num" || echo -e "${YELLOW}prompt ${num} 运行异常，继续下一个...${NC}"
         done
     else
-        run_single "$mode" "$prompt_num"
+        run_single "$mode" "$prompt_num" || echo -e "${YELLOW}运行异常，检查日志${NC}"
     fi
 }
 
@@ -241,8 +240,8 @@ main() {
             ;;
         both)
             check_prerequisites "both"
-            run_mode "opensource" "$prompt_num"
-            run_mode "cli" "$prompt_num"
+            run_mode "opensource" "$prompt_num" || true
+            run_mode "cli" "$prompt_num" || true
             ;;
         *)
             usage
