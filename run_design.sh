@@ -134,20 +134,11 @@ run_single() {
     local before_snap="/tmp/sd_before_$$"
     snapshot_files > "$before_snap"
 
-    # 构造完整 prompt — 不用 /superdesign 前缀，直接给出完整指令
+    # 构造完整 prompt — /superdesign 前缀触发 skill 加载
     local full_prompt
-    full_prompt="You are a senior frontend designer. Read the skill instructions from .claude/skills/superdesign/ first, then complete this design task.
+    full_prompt="/superdesign ${prompt_content}
 
-${prompt_content}
-
-IMPORTANT INSTRUCTIONS:
-- This is a NON-INTERACTIVE run. Do NOT ask questions or wait for confirmations.
-- Skip the 4-step confirmation workflow. Go straight to generating the final HTML.
-- Make reasonable design decisions on your own.
-- Generate self-contained HTML file(s) with inline Tailwind CSS via CDN.
-- Write the output file(s) to: .superdesign/design_iterations/
-- File naming: design_${prompt_num}_1.html (and _2.html for a second variant)
-- MUST use the Write tool to create the file(s). Do not just output HTML in chat."
+IMPORTANT: This is a non-interactive run. Skip all confirmation steps and generate the final HTML design directly. Do NOT ask questions — make reasonable design decisions and proceed to generate the HTML file(s) to .superdesign/design_iterations/."
 
     echo -e "${BLUE}正在运行 Claude Code (${mode} 模式)...${NC}"
     echo -e "${YELLOW}这可能需要几分钟，请耐心等待...${NC}"
